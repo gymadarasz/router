@@ -20,7 +20,7 @@ RewriteRule ^ index.php [L]
 
 include 'vendor/autoload.php';
 
-use gymadarasz\router;
+use gymadarasz\router\Router;
 
 // Default request uri base is '/' but you can override the default.
 
