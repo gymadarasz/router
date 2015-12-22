@@ -28,7 +28,7 @@ class Router {
 			if(in_array($_SERVER['REQUEST_METHOD'], $methods) && preg_match($regex, $uri, $matches)) {
 				$found = true;
 				if(is_string($action)) {
-					$action($route, $matches);
+					call_user_func_array($action, [$route, $matches]);
 				}
 				else if(is_array($action)) {
 					Router::dispatch($action, $base);
