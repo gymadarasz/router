@@ -30,8 +30,8 @@ class Router {
 				if(is_string($action)) {
 					$action($route, $matches);
 				}
-				if(is_array($action)) {
-					Router::dispatch($action);
+				else if(is_array($action)) {
+					Router::dispatch($action, $base);
 				}
 				else {
 					throw new \Exception ('Illegal action');
