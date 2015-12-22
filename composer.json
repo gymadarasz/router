@@ -1,3 +1,8 @@
 {
-	"name": "gymadarasz/router"
+	"name": "gymadarasz/router",
+	"autoload": {
+		"psr-4": {
+			"gymadarasz\\router\\": ""
+		}
+	}
 }
