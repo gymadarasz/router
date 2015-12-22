@@ -82,7 +82,7 @@ Router::dispatch($routes, $base);
 
 // This is an example route action handler. 
 // The action handlers can use the $route and 
-// $matches arguments from Router as two strings..
+// $matches arguments from Router.
 // $route is a string contains the current pattern
 // $matches is an array contains the current URL
 // and if you use parenthesis in your regex then
