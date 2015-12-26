@@ -15,6 +15,64 @@ RewriteRule ^ index.php [L]
 ```
 
 - Add the code below to your `index.php`:
+ 
+```php
+<?php
+
+include 'vendor/autoload.php';
+
+use gymadarasz\router\Router;
+
+// example handlers:
+
+function action_handler($route, $matches) {
+	echo 'custom action handler...' . PHP_EOL;
+}
+
+function action_handler_numeric($route, $matches) {
+	echo 'custom action num handler...' . PHP_EOL;
+}
+
+function action_test($route, $matches) {
+	echo 'custom action handler for /test url...' . PHP_EOL;
+}
+
+// or you can use a controller class for callbacks..
+class MyDefaultControllerClass {
+	
+	public function indexMethod($route, $matches) {
+		echo 'default route...' . PHP_EOL;
+	}
+	
+}
+
+// usage:
+
+
+$base = '/';
+$routes = [
+	Router::regex('GET,POST', 'test$') => 'action_test',
+	Router::regex('GET,POST', 'test/(:num)$') => 'action_handler_numeric',
+	Router::regex('GET,POST', 'test/(:any)$') => 'action_handler',
+];
+try {
+	Router::dispatch($routes, $base);
+}
+catch(RouterException $e) {
+	MyDefaultControllerClass::indexMethod(null, null);
+}
+
+/* call the next example urls:
+http://localhost/
+http://localhost/test
+http://localhost/test/keyword
+http://localhost/test/123
+*/
+
+```
+
+### explanation
+
 ```php
 <?php
 
