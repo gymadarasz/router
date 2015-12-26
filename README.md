@@ -1,6 +1,12 @@
 # router
 Simple Web Application Router Class
 
+### Why would I use this over illuminate/routing or symfony/routing?
+- Could you write a comparison?
+- Speed! :) I like the laravel and symfony frameworks but the routing the first every single pageload, so my philosophy that routing have to be quick cause it just a simple regex matcher and this syntax easier for me. Anyway, here is a benchmark comparison e.g with FastRouter:
+https://github.com/gymadarasz/router-benchmark
+ref: https://github.com/gymadarasz/router/issues/1
+
 ## usage and example
 
 - Install with composer:
