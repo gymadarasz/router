@@ -7,8 +7,10 @@ use Exception;
 class RouterException extends Exception {}
 
 class Router {
-
+	
 	public static function dispatch($routes = [], $base = '/', $uri = null, $method = null) {
+		
+		$result = null;
 		
 		if(is_null($uri)) {
 			$uri = $_SERVER['REQUEST_URI'];
@@ -17,7 +19,7 @@ class Router {
 		if(is_null($method)) {
 			$method = $_SERVER['REQUEST_METHOD'];
 		}
-
+		
 		$baselen = strlen($base);
 
 		if(substr($uri, 0, $baselen) !== $base) {
@@ -38,13 +40,13 @@ class Router {
 			if(in_array($method, $methods) && preg_match($regex, $uri, $matches)) {
 				$found = true;
 				if(is_string($action) && is_callable($action)) {
-					call_user_func_array($action, [$route, $matches]);
+					$result = call_user_func_array($action, [$route, $matches]);
 				}
 				else if(is_array($action)) {
-					Router::dispatch($action, $base);
+					$result = Router::dispatch($action, $base);
 				}
 				else if(is_string($action)) {
-					$action($route, $matches);
+					$result = $action($route, $matches);
 				}
 				else {
 					throw new RouterException ('Illegal action');
@@ -56,6 +58,8 @@ class Router {
 		if(!$found) {
 			throw new RouterException ('Not found action handler for ' . $uri . ' URI');
 		}
+		
+		return $result;
 	}
 	
 	public static function regex($method, $pattern) {
