@@ -8,9 +8,15 @@ class RouterException extends Exception {}
 
 class Router {
 
-	public static function dispatch($routes = [], $base = '/') {
+	public static function dispatch($routes = [], $base = '/', $uri = null, $method = null) {
 		
-		$uri = $_SERVER['REQUEST_URI'];
+		if(is_null($uri)) {
+			$uri = $_SERVER['REQUEST_URI'];
+		}
+		
+		if(is_null($method)) {
+			$method = $_SERVER['REQUEST_METHOD'];
+		}
 
 		$baselen = strlen($base);
 
@@ -29,7 +35,7 @@ class Router {
 			}
 			$methods = explode(',', $splits[0]);
 			$regex = $splits[1];
-			if(in_array($_SERVER['REQUEST_METHOD'], $methods) && preg_match($regex, $uri, $matches)) {
+			if(in_array($method, $methods) && preg_match($regex, $uri, $matches)) {
 				$found = true;
 				if(is_string($action) && is_callable($action)) {
 					call_user_func_array($action, [$route, $matches]);
