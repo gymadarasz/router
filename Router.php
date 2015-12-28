@@ -67,7 +67,8 @@ class Router {
 	
 	public static function regex($method, $pattern) {
 		
-		$regex = $method . ':/^' . str_replace(['/', ':num', ':any'], ['\\/', '\\d+', '\\w+'], $pattern) . '/';
+		$regex = preg_replace(['/\/$/', '/\.\.\.$/'], ['[/]?', ''], $pattern);
+		$regex = $method . ':/^' . str_replace(['/', ':num', ':any'], ['\\/', '\\d+', '\\w+'], $regex) . '/';
 		
 		return $regex;
 	}
