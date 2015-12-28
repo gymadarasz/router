@@ -1,5 +1,5 @@
-# router
-Simple Web Application Router Class
+# Router
+Fast and Simple Web Application Router Class
 
 ### Why would I use this over illuminate/routing or symfony/routing?
 - Could you write a comparison?
