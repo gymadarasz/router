@@ -42,11 +42,14 @@ class Router {
 				if(is_string($action) && is_callable($action)) {
 					$result = call_user_func_array($action, [$route, $matches]);
 				}
-				else if(is_array($action)) {
-					$result = Router::dispatch($action, $base);
-				}
 				else if(is_string($action)) {
 					$result = $action($route, $matches);
+				}
+				else if(is_callable($action)) {
+					$result = $action($route, $matches);
+				}
+				else if(is_array($action)) {
+					$result = Router::dispatch($action, $base);
 				}
 				else {
 					throw new RouterException ('Illegal action');
