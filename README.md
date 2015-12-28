@@ -38,7 +38,7 @@ try {
 }
 catch(RouterException $e) {
 	header("HTTP/1.0 404 Not Found");
-	echo 'Sorry, here is nothing to see..' . PHP_EOL;
+	echo 'Sorry, here is nothing to see, due router exception message is "' . $e->getMessage() . '"' . PHP_EOL;
 }
 
 ```
@@ -126,7 +126,7 @@ try {
 }
 catch(RouterException $e) {
 	header("HTTP/1.0 404 Not Found");
-	echo 'Sorry, you calles the /' . $e->getBase() . ' but here is nothingh to see..' . 
+	echo 'Sorry, you calles the /' . $e->getBase() . ' but here is nothingh to see, due router exception message is "' . $e->getMessage() . '"' . PHP_EOL;
 			'<a href="javascript:history.go(-1);">step back</a>' . PHP_EOL;
 }
 
