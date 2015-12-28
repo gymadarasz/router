@@ -221,13 +221,14 @@ Router::dispatch($routes, $base);
 
 
 // This is an example route action handler. 
-// The action handlers can use the $route and 
+// The action handlers can use the $base $route and 
 // $matches arguments from Router.
+// $base is your specified root, defult set '/'
 // $route is a string contains the current pattern
 // $matches is an array contains the current URL
 // and if you use parenthesis in your regex then
 // contains the important url arguments.
-function action_handler($route, $matches) {
+function action_handler($base, $matches, $route) {
 	var_dump($route);
 	var_dump($matches);
 }
