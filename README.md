@@ -7,12 +7,12 @@ Simple Web Application Router Class
 https://github.com/gymadarasz/router-benchmark
 ref: https://github.com/gymadarasz/router/issues/1
 
-## usage and example
+## usage and examples
 
-- Install with composer:
+#### Install with composer:
 `composer require gymadarasz/router`
 
-- Add the code below to your `.htaccess` file for user and SEO friendly URLs:
+#### Add the code below to your `.htaccess` file for user and SEO friendly URLs:
 ```
 RewriteEngine On
 RewriteCond %{REQUEST_FILENAME} !-d
@@ -20,8 +20,8 @@ RewriteCond %{REQUEST_FILENAME} !-f
 RewriteRule ^ index.php [L]
 ```
 
-- Add the code below to your `index.php`:
- 
+#### Add the code below to your `index.php`:
+
 ```php
 <?php
 
@@ -29,55 +29,131 @@ include 'vendor/autoload.php';
 
 use gymadarasz\router\Router;
 
-// example handlers:
-
-function action_handler($route, $matches) {
-	echo 'custom action handler...' . PHP_EOL;
-}
-
-function action_handler_numeric($route, $matches) {
-	echo 'custom action num handler...' . PHP_EOL;
-}
-
-function action_test($route, $matches) {
-	echo 'custom action handler for /test url...' . PHP_EOL;
-}
-
-// or you can use a controller class for callbacks..
-class MyDefaultControllerClass {
-	
-	public function indexMethod($route, $matches) {
-		echo 'default route...' . PHP_EOL;
-	}
-	
-}
-
-// usage:
-
-
-$base = '/';
-$routes = [
-	Router::regex('GET,POST', 'test$') => 'action_test',
-	Router::regex('GET,POST', 'test/(:num)$') => 'action_handler_numeric',
-	Router::regex('GET,POST', 'test/(:any)$') => 'action_handler',
-];
 try {
-	Router::dispatch($routes, $base);
+	Router::dispatch([
+		Router::regex('GET', '/') => function() {
+			echo '<h2>Hello World on default page!</h2>' . PHP_EOL;
+		},
+	], $base);  
 }
 catch(RouterException $e) {
-	MyDefaultControllerClass::indexMethod(null, null);
+	header("HTTP/1.0 404 Not Found");
+	echo 'Sorry, here is nothingh to see..' . PHP_EOL;
 }
-
-/* call the next example urls:
-http://localhost/
-http://localhost/test
-http://localhost/test/keyword
-http://localhost/test/123
-*/
 
 ```
 
-### explanation
+#### Grouping
+(see in more explanation bellow)
+
+
+#### The next is a complet example application
+
+```php
+<?php
+
+include 'vendor/autoload.php';
+
+use gymadarasz\router\Router;
+
+// use any base for your app e.g. when your dummy page is in a different subfolder in 
+// your local then you can call http://localhost/dummy-page/ url
+// default set is '/'
+$base = '/dummy-page/';
+
+try {
+	// here some way how you can use the router
+	Router::dispatch([
+		
+		
+	
+		Router::regex('GET', 'get/') => function() {
+			echo 	'You called the "/get" url. It will match for "/get"' . 
+					'or match with "/get/more/parts..." etc.' . 
+					' due there is a "/"  or nothing at the end of pattern<br>' . 
+					'<form method="post" action="post">' . 
+					'  <input type="submit" value="Post it!">' . 
+					'</form>' . PHP_EOL;
+		},
+		
+		Router::regex('POST', 'post$') => function() {
+			echo 	'You post some data to the "/post" url. It will match ' . 
+					'for "/post" but not match with "/post/more/parts..." etc. ' . 
+					'due there is a "$" at the end of pattern.<br>' . 
+					'<a href="any">Step to next..</a>' . PHP_EOL;
+		},
+				
+		Router::regex('ANY', 'any...') => function() {
+			echo 	'You called or post some data to the "/any" url. ' . 
+					'It will match for "/any" or "/anyone" or match with "/anything" ' . 
+					'or "/any/more/parts..." etc. due there is three dot "..." at ' . 
+					'the end of pattern. <a href="user/123/john-doe">Okey, let\'s see more examples..</a>'  . PHP_EOL;
+		},
+		
+		// you can use :num :str and :any regex helpers
+				
+		Router::regex('GET', 'user/(:num)/(:any)') => function($base, $args) {
+			echo 	'You called the "' . $args[0] . '" url ' . 
+					'and you get an $args argument couse used the (:num) and ' . 
+					'(:any) in parenthesis:' . PHP_EOL;
+			var_dump($args);
+			echo 'next, you can <a href="' . $base . 'function">call a custom function</a> or <a href="' . $base . 'method">call a custom method..</a>' . PHP_EOL;
+		},
+		
+		// you can call custom functions or class methods
+		
+		Router::regex('GET', 'function/') => 'your_custom_function',
+		
+		Router::regex('GET', 'method/') => 'YourCustomController::doSomething',
+		
+		// be careful you have to add the full namespace to class path if your classes are in nemaspace
+		Router::regex('GET', 'dosomething/') => 'Your\\SpecNamespace\\YourCustomController::doSomething',
+		
+		// OR if it's not enought fou can use custom regex in url pattern
+		
+		'GET:/^date\/([0-9]{4})-([0-9]{2})-([0-9]{2})$/' => function($base, $args) {
+			echo 'You called the "/date" url. Argument was: ' . PHP_EOL;
+			var_dump($args);
+			
+			echo '<a href="' . $base . '">go back to main page</a>' . PHP_EOL;
+		},
+		
+		Router::regex('ANY', '$') => function() {
+			echo 'You called the default page on root "/" url. <a href="get">Let\'s see the tests..</a>' . PHP_EOL;
+		},
+		
+	], $base);  
+}
+catch(RouterException $e) {
+	header("HTTP/1.0 404 Not Found");
+	echo 'Sorry, you calles the /' . $e->getBase() . ' but here is nothingh to see..' . 
+			'<a href="javascript:history.go(-1);">step back</a>' . PHP_EOL;
+}
+
+
+// custom callback function for routing
+function your_custom_function($base, $args) {
+	echo	'you called a custom function on /' . $args[0] . ' url.<br>' . 
+			'<a href="method">Call a custom method...</a><br>' . 
+			'<a href="date/' . date('Y-m-d') . '">or step to current date..</a><br>' .
+			'<a href="javascript:history.go(-1);">step back</a>' . PHP_EOL;
+}
+
+
+class YourCustomController {
+	
+	// custom callback method for routing
+	public function doSomething($base, $args) {
+		echo	'you called a custom method on /' . $args[0] . ' url.<br>' . 
+				'<a href="function">Call a custom function...</a><br>' . 
+				'<a href="date/' . date('Y-m-d') . '">or step to current date..</a><br>' .
+				'<a href="javascript:history.go(-1);">step back</a>' . PHP_EOL;
+	}
+}
+
+```
+
+#### More explanation
 
 ```php
 <?php
