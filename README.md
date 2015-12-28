@@ -38,7 +38,7 @@ try {
 }
 catch(RouterException $e) {
 	header("HTTP/1.0 404 Not Found");
-	echo 'Sorry, here is nothingh to see..' . PHP_EOL;
+	echo 'Sorry, here is nothing to see..' . PHP_EOL;
 }
 
 ```
