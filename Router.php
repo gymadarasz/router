@@ -32,6 +32,10 @@ class Router {
 		
 		$result = null;
 		
+		if(!$base || substr($base, 0, 1) != '/') {
+			$base = '/' . $base;
+		}
+		
 		if(substr($base, -1) != '/') {
 			$base .= '/';
 		}
