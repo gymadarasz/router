@@ -34,7 +34,7 @@ try {
 		Router::regex('GET', '/') => function() {
 			echo '<h2>Hello World on default page!</h2>' . PHP_EOL;
 		},
-	], '/');
+	], $base);  
 }
 catch(RouterException $e) {
 	header("HTTP/1.0 404 Not Found");

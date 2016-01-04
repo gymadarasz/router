@@ -28,13 +28,9 @@ namespace gymadarasz\router;
 
 class Router {
 	
-	public static function dispatch($routes = [], $base = '/', $uri = null, $method = null) {
+	public static function dispatch($routes = [], $base = '/', $uri = null, $method = null, ...$extra) {
 		
 		$result = null;
-		
-		if(!$base || substr($base, 0, 1) != '/') {
-			$base = '/' . $base;
-		}
 		
 		if(substr($base, -1) != '/') {
 			$base .= '/';
@@ -67,17 +63,18 @@ class Router {
 			$regex = $splits[1];
 			if(in_array($method, $methods) && preg_match($regex, $uri, $matches)) {
 				$found = true;
+				$args = array_merge([$base, $matches, $route], $extra);
 				if(is_string($action) && is_callable($action)) {
-					$result = call_user_func_array($action, [$base, $matches, $route]);
+					$result = call_user_func_array($action, $args);
 				}
 				else if(is_string($action)) {
-					$result = $action($base, $matches, $route);
+					$result = $action($base, $matches, $route, ...$extra);
 				}
 				else if(is_callable($action)) {
-					$result = $action($base, $matches, $route);
+					$result = $action($base, $matches, $route, ...$extra);
 				}
 				else if(is_array($action)) {
-					$result = Router::dispatch($base, $matches, $route);
+					$result = Router::dispatch($base, $matches, $route, ...$extra);
 				}
 				else {
 					throw new RouterException ('Illegal action', 1, null, $base);
