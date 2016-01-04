@@ -32,10 +32,10 @@ class Router {
 		
 		$result = null;
 		
-		if(substr($base, -1) != '/') {
-			$base .= '/';
+		if(!$base || substr($base, 0, 1) != '/') {
+			$base = '/' . $base;
 		}
-		
+ 
 		if(is_null($uri)) {
 			$uri = $_SERVER['REQUEST_URI'];
 		}
