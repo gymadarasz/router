@@ -84,7 +84,7 @@ class Router {
 		}
 
 		if(!$found) {
-			throw new RouterException ('Not found action handler for ' . $uri . ' URI', 2, null, $base);
+			throw new RouterException ('Not found action handler for ' . $uri . ' URI on method ' . $method, 2, null, $base);
 		}
 		
 		return $result;
