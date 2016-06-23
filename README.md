@@ -25,21 +25,34 @@ RewriteRule ^ index.php [L]
 ```php
 <?php
 
+namespace gymadarasz\dsys;
+
 include 'vendor/autoload.php';
 
 use gymadarasz\router\Router;
+use gymadarasz\router\RouterException;
 
-try {
-	Router::dispatch([
-		Router::regex('GET', '/') => function() {
-			echo '<h2>Hello World on default page!</h2>' . PHP_EOL;
-		},
-	], $base);  
+class App {
+    
+    public function __construct() {
+        $base = '/tanul/dsys/';
+        try {
+            Router::dispatch(array(
+                Router::regex('GET', '/') => function() {$this->mainController();},
+            ), $base);
+        } catch (RouterException $e) {
+            header("HTTP/1.0 404 Not Found");
+            echo 'Sorry, here is nothing to see, due router exception message is "' . $e->getMessage() . '"' . PHP_EOL;
+        }
+    }
+    
+    public function mainController() {
+        echo 'Hello World Controller!';
+    }
+    
 }
-catch(RouterException $e) {
-	header("HTTP/1.0 404 Not Found");
-	echo 'Sorry, here is nothing to see, due router exception message is "' . $e->getMessage() . '"' . PHP_EOL;
-}
+
+new App();
 
 ```
 
